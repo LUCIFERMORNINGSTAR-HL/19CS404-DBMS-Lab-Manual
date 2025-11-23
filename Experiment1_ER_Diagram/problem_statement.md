@@ -1,143 +1,109 @@
-# ER Diagram Workshop – Submission Template
+# Experiment 1: ER Diagram
 
-## Objective
-To understand and apply ER modeling concepts by creating ER diagrams for real-world applications.
 
-## Purpose
-Gain hands-on experience in designing ER diagrams that represent database structure including entities, relationships, attributes, and constraints.
+## Scenario Chosen
+**Library Management System**
 
----
 
-# Scenario A: City Fitness Club Management
+## ER Diagram
 
-**Business Context:**  
-FlexiFit Gym wants a database to manage its members, trainers, and fitness programs.
+<img width="997" height="800" alt="image" src="https://github.com/user-attachments/assets/19858f55-1c3c-46bf-aab5-03e8f7038e2a" />
 
-**Requirements:**  
-- Members register with name, membership type, and start date.  
-- Each member can join multiple programs (Yoga, Zumba, Weight Training).  
-- Trainers assigned to programs; a program may have multiple trainers.  
-- Members may book personal training sessions with trainers.  
-- Attendance recorded for each session.  
-- Payments tracked for memberships and sessions.
+<img width="983" height="769" alt="image" src="https://github.com/user-attachments/assets/907ce69d-c9d3-4269-83f3-503ffedf3940" />
 
-### ER Diagram:
-*Paste or attach your diagram here*  
-![ER Diagram](er_diagram_fitness.png)
+## Entities and Attributes
 
-### Entities and Attributes
+### **Member**
+- `Member_ID` *(Primary Key)*
+- `Name`
+- `Phone`
 
-| Entity | Attributes (PK, FK) | Notes |
-|--------|--------------------|-------|
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
+### **Book**
+- `Book_ID` *(Primary Key)*
+- `Title`
+- `Author`
 
-### Relationships and Constraints
+### **Loan**
+- `Loan_ID` *(Primary Key)*
+- `Loan_Date`
+- `Return_Date`
 
-| Relationship | Cardinality | Participation | Notes |
-|--------------|------------|---------------|-------|
-|              |            |               |       |
-|              |            |               |       |
-|              |            |               |       |
+### **Fine**
+- `Fine_ID` *(Primary Key)*
+- `Amount`
+- `Paid_Status`
 
-### Assumptions
-- 
-- 
-- 
+### **Room**
+- `Room_ID` *(Primary Key)*
+- `Type`
+- `Capacity`
 
----
+### **Event**
+- `Event_ID` *(Primary Key)*
+- `Title`
+- `Date`
 
-# Scenario B: City Library Event & Book Lending System
+### **Speaker**
+- `Speaker_ID` *(Primary Key)*
+- `Name`
+- `Expertise`
 
-**Business Context:**  
-The Central Library wants to manage book lending and cultural events.
 
-**Requirements:**  
-- Members borrow books, with loan and return dates tracked.  
-- Each book has title, author, and category.  
-- Library organizes events; members can register.  
-- Each event has one or more speakers/authors.  
-- Rooms are booked for events and study.  
-- Overdue fines apply for late returns.
+## Relationships and Constraints
 
-### ER Diagram:
-*Paste or attach your diagram here*  
-![ER Diagram](er_diagram_library.png)
+### **1. Borrows (Member → Book)**
+- **Cardinality:** M:N  
+- **Participation:** Partial  
+- **Description:** A member can borrow multiple books, and each book can be borrowed by different members over time.
 
-### Entities and Attributes
 
-| Entity | Attributes (PK, FK) | Notes |
-|--------|--------------------|-------|
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
+### **2. Loan (Book → Member)**
+- **Cardinality:** 1:1 per loan record  
+- **Participation:** Total from Loan side  
+- **Description:** Each loan links a book to a member with details of issue and return dates.
 
-### Relationships and Constraints
 
-| Relationship | Cardinality | Participation | Notes |
-|--------------|------------|---------------|-------|
-|              |            |               |       |
-|              |            |               |       |
-|              |            |               |       |
+### **3. Incurs (Loan → Fine)**
+- **Cardinality:** 1:0..1  
+- **Participation:** Optional  
+- **Description:** Fines are applied only to overdue loans. Each fine is linked to one specific loan.
 
-### Assumptions
-- 
-- 
-- 
 
----
+### **4. Organizes (Event → Room)**
+- **Cardinality:** 1:1  
+- **Participation:** Total from Event side  
+- **Description:** Every event takes place in one room; a room can host many events at different times.
 
-# Scenario C: Restaurant Table Reservation & Ordering
 
-**Business Context:**  
-A popular restaurant wants to manage reservations, orders, and billing.
+### **5. Has (Event → Speaker)**
+- **Cardinality:** 1:M  
+- **Participation:** Optional  
+- **Description:** An event may feature one or more speakers.
 
-**Requirements:**  
-- Customers can reserve tables or walk in.  
-- Each reservation includes date, time, and number of guests.  
-- Customers place food orders linked to reservations.  
-- Each order contains multiple dishes; dishes belong to categories (starter, main, dessert).  
-- Bills generated per reservation, including food and service charges.  
-- Waiters assigned to serve reservations.
 
-### ER Diagram:
-*Paste or attach your diagram here*  
-![ER Diagram](er_diagram_restaurant.png)
+### **6. Member Participates in Event**
+- **Cardinality:** M:N  
+- **Participation:** Optional  
+- **Description:** Members can attend multiple events, and events can have multiple participating members.
 
-### Entities and Attributes
 
-| Entity | Attributes (PK, FK) | Notes |
-|--------|--------------------|-------|
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
-|        |                    |       |
+## Design Choices
 
-### Relationships and Constraints
+### **1. Separate Loan Entity**
+To capture borrowing activities clearly, connecting Members and Books through a many-to-many relationship. Enables tracking of `Loan_Date` and `Return_Date`.
 
-| Relationship | Cardinality | Participation | Notes |
-|--------------|------------|---------------|-------|
-|              |            |               |       |
-|              |            |               |       |
-|              |            |               |       |
+### **2. Fine Management**
+Fines are modeled separately for flexibility in monitoring late returns, their amounts, and payment statuses.
 
-### Assumptions
-- 
-- 
-- 
+### **3. Event Scheduling**
+The Room entity manages library space allocation and ensures event capacity tracking and scheduling control.
 
----
+### **4. Speaker Relationship**
+Speakers are managed separately to allow guest lectures or workshops, expanding library engagement.
 
-## Instructions for Students
+### **5. Comprehensive Member Role**
+Members can borrow books and participate in events, reflecting both academic and community aspects of a library.
 
-1. Complete **all three scenarios** (A, B, C).  
-2. Identify entities, relationships, and attributes for each.  
-3. Draw ER diagrams using **draw.io / diagrams.net** or hand-drawn & scanned.  
-4. Fill in all tables and assumptions for each scenario.  
-5. Export the completed Markdown (with diagrams) as **a single PDF**
+
+## Result
+Thus, the **ER Diagram for the Library Management System** has been successfully designed to represent the core entities, attributes, and relationships required for efficient management of library operations including books, members, loans, fines, rooms, and events.
